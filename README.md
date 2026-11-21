@@ -123,4 +123,8 @@ xelatex 论文/paper_team.tex   # 团队版
 
 ---
 
-数据集版权归 GroupLens Research 所有，仅用于课程学习。
+## 许可
+
+本项目代码、论文与图表采用 [MIT License](LICENSE)，可自由使用、修改与再分发，保留版权声明即可。
+
+MovieLens 100K 数据集不在此列，其版权归 [GroupLens Research](https://grouplens.org/datasets/movielens/) 所有，按原数据集的使用条款使用，仅用于课程学习。
