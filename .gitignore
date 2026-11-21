@@ -6,6 +6,9 @@
 数据/ml-100k/
 数据/.tmp/
 
+# 本地临时脚本（含部署凭据，绝不入库）
+.tmp/
+
 # Python
 __pycache__/
 *.pyc
