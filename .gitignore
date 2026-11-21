@@ -27,6 +27,3 @@ desktop.ini
 论文/*.out
 论文/*.toc
 论文/*.synctex.gz
-
-# 第三方查重/AIGC 报告（含报告编号，不入公开仓库）
-查重/
