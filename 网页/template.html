@@ -77,7 +77,7 @@ tr.ours td{color:#ffd0b8}
   <section class="stage">
     <canvas id="graph"></canvas>
     <div class="legend">
-      节点亮度 = <b>π<sub>i</b></sub>（对数）<br>
+      节点亮度 = <b>π<sub>i</sub></b>（对数）<br>
       节点半径 ∝ √π<sub>i</sub><br>
       边宽 = 相似度权重 w<sub>ij</sub><br>
       光点 = 沿 P 行走的粒子
@@ -174,7 +174,7 @@ const state = {
   visits: new Float64Array(N),
   hover: -1
 };
-const S_gap = {0.6: 0.4489};
+const S_gap = S.gap_by_alpha || {};
 
 /* ---------- 工具 ---------- */
 const clamp = (x,a,b) => x<a?a:(x>b?b:x);
@@ -250,6 +250,7 @@ function updateUI(){
   el("sliceRow").style.display = state.mode === "slice" ? "flex" : "none";
   el("sliceVal").textContent = `${state.sliceIdx+1}/4`;
   el("alphaVal").textContent = state.restart ? fmt(state.alpha,2) : "1.00";
+  el("alpha").disabled = state.mode === "slice";
   el("headMeta").innerHTML =
     `${G.meta.n_nodes} 节点 · ${G.meta.n_links} 边 · ${G.meta.n_components} 连通分量<br>
      ${G.meta.time_start} → ${G.meta.time_end} · α*=${state.mode==='slice'?S.alpha:fmt(state.alpha,2)}`;
@@ -379,7 +380,6 @@ function draw(now){
   }
 
   // 节点
-  const topIdx = rankedTop(12).map(x=>x.i);
   for (let i=0;i<N;i++){
     const [x,y] = nodeXY(i);
     const t = (lg(pi[i]) - lo) / (hi - lo + 1e-9);
@@ -410,13 +410,20 @@ function draw(now){
     }
   }
 
-  // 标签（Top-12 与种子）
+  // 标签（Top-8 与种子，做重叠抑制）
   ctx.font = "10.5px 'Microsoft YaHei',sans-serif";
   ctx.textBaseline = "middle";
-  for (const i of topIdx){
+  const placed = [];
+  for (const i of rankedTop(8).map(x => x.i)){
     const [x,y] = nodeXY(i);
     const name = titles[i].replace(/\s*\((\d{4})\)$/,"");
-    const txt = name.length > 16 ? name.slice(0,16)+"…" : name;
+    const txt = name.length > 14 ? name.slice(0,14)+"…" : name;
+    const wdt = ctx.measureText(txt).width;
+    const box = [x+9, y-14, wdt, 14];
+    const clash = placed.some(b => box[0] < b[0]+b[2] && box[0]+box[2] > b[0] &&
+                                   box[1] < b[1]+b[3] && box[1]+box[3] > b[1]);
+    if (clash) continue;
+    placed.push(box);
     ctx.strokeStyle = "rgba(6,10,16,.9)"; ctx.lineWidth = 3;
     ctx.strokeText(txt, x+9, y-7);
     ctx.fillStyle = "rgba(214,228,244,.92)";
@@ -587,8 +594,17 @@ hcv.addEventListener("mousemove", e => {
 hcv.addEventListener("mouseleave", () => { el("tip").style.opacity = 0; });
 
 /* ---------- 启动 ---------- */
+const QP = new URLSearchParams(location.hash.replace(/^#/, ""));
+if (QP.has("alpha")) state.alpha = clamp(parseFloat(QP.get("alpha")), 0.05, 0.95);
+if (QP.get("restart") === "0") state.restart = false;
+if (QP.has("seed")) state.seeds = QP.get("seed").split(",").map(Number).filter(i => i >= 0 && i < N);
+if (QP.has("slice")){ state.mode = "slice"; state.sliceIdx = clamp(parseInt(QP.get("slice"), 10) - 1, 0, 3); }
+el("alpha").value = state.alpha;
+el("btnRestart").textContent = state.restart ? "重启项：开" : "重启项：关";
+el("btnRestart").classList.toggle("on", state.restart);
+el("btnSlice").classList.toggle("on", state.mode === "slice");
+el("slice").value = state.sliceIdx + 1;
 resize();
-state.seeds = [];
 recompute();
 spawnParts();
 requestAnimationFrame(draw);

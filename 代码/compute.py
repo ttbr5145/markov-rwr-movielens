@@ -404,6 +404,7 @@ def main():
            "actual": [{"idx": q + 1, "values": actual_slices[q]} for q in range(4)],
            "global_pi": {"alpha": a_best, "values": [round(float(x), 4) for x in pi]},
            "vpop": [round(float(x), 4) for x in v_pop],
+           "gap_by_alpha": {f"{r['alpha']:.2f}": round(r["gap"], 4) for r in scan},
            "prediction": {"models": [{"name": e["name"], "kl": round(e["kl"], 4),
                                       "hit10": round(e["hit10"], 3),
                                       "spearman": round(e["spearman"], 4)} for e in evals],
@@ -427,15 +428,12 @@ def main():
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.2, 3.6))
     xs = [r["alpha"] for r in scan]
-    ax1.plot(xs, [r["iters"] for r in scan], "o-", ms=4, label="收敛迭代数")
-    ax1.set_xlabel(r"$\alpha$"); ax1.set_ylabel("迭代次数")
+    ax1.plot(xs, [r["iters"] for r in scan], "o-", ms=4, color="tab:blue")
+    ax1.set_xlabel(r"$\alpha$"); ax1.set_ylabel("迭代次数", color="tab:blue")
     ax1.grid(ls=":", alpha=0.6)
     ax1b = ax1.twinx()
-    ax1b.plot(xs, [r["gap"] for r in scan], "s--", ms=3.5, color="tab:red",
-              label=r"谱隙 $1-|\lambda_2|$")
-    ax1b.set_ylabel(r"$1-|\lambda_2|$", color="tab:red")
-    l1, lb1 = ax1.get_legend_handles_labels(); l2, lb2 = ax1b.get_legend_handles_labels()
-    ax1.legend(l1 + l2, lb1 + lb2, frameon=False, loc="upper left", fontsize=8)
+    ax1b.plot(xs, [r["gap"] for r in scan], "s--", ms=3.5, color="tab:red")
+    ax1b.set_ylabel(r"谱隙 $1-|\lambda_2|$", color="tab:red")
     ax2.plot(xs, [r["top10_avg_count"] for r in scan], "o-", ms=4)
     ax2.set_xlabel(r"$\alpha$"); ax2.set_ylabel("Top-10 平均评分数")
     ax2.grid(ls=":", alpha=0.6)
