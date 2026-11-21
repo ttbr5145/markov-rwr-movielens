@@ -17,3 +17,10 @@ __pycache__/
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# LaTeX 编译中间产物
+论文/*.aux
+论文/*.log
+论文/*.out
+论文/*.toc
+论文/*.synctex.gz
