@@ -1,0 +1,816 @@
+{
+  "meta": {
+    "alpha_theory": 0.85,
+    "eps": 0.15,
+    "tol": 1e-12,
+    "max_iter": 3000,
+    "top_n": 200,
+    "n_users": 943,
+    "n_ratings_total": 100000,
+    "time_start": "1997-09-20",
+    "time_end": "1998-04-22"
+  },
+  "alpha_scan": [
+    {
+      "alpha": 0.05,
+      "iters": 8,
+      "residual": 3.7912121358951723e-13,
+      "lam2": 0.04592558523370144,
+      "gap": 0.9540744147662985,
+      "entropy": 5.242286101287588,
+      "gini": 0.1829539321775546,
+      "top10_avg_count": 485.2
+    },
+    {
+      "alpha": 0.1,
+      "iters": 10,
+      "residual": 8.322400928129081e-13,
+      "lam2": 0.09185117046740307,
+      "gap": 0.9081488295325969,
+      "entropy": 5.24031394000572,
+      "gini": 0.18619794498758463,
+      "top10_avg_count": 485.2
+    },
+    {
+      "alpha": 0.15,
+      "iters": 12,
+      "residual": 9.232514926182933e-13,
+      "lam2": 0.13777675570110454,
+      "gap": 0.8622232442988955,
+      "entropy": 5.238192387574594,
+      "gini": 0.1895513805725553,
+      "top10_avg_count": 485.2
+    },
+    {
+      "alpha": 0.2,
+      "iters": 14,
+      "residual": 9.939835413086406e-13,
+      "lam2": 0.1837023409348049,
+      "gap": 0.8162976590651951,
+      "entropy": 5.235931741949852,
+      "gini": 0.19298596137018972,
+      "top10_avg_count": 485.2
+    },
+    {
+      "alpha": 0.25,
+      "iters": 17,
+      "residual": 2.7678250316687247e-13,
+      "lam2": 0.22962792616850855,
+      "gap": 0.7703720738314914,
+      "entropy": 5.233541059300778,
+      "gini": 0.19647838601536385,
+      "top10_avg_count": 477.3
+    },
+    {
+      "alpha": 0.3,
+      "iters": 19,
+      "residual": 4.687621818488807e-13,
+      "lam2": 0.27555351140220957,
+      "gap": 0.7244464885977904,
+      "entropy": 5.2310282257345495,
+      "gini": 0.2000332809202652,
+      "top10_avg_count": 460.3
+    },
+    {
+      "alpha": 0.35,
+      "iters": 21,
+      "residual": 9.098958565767479e-13,
+      "lam2": 0.32147909663591,
+      "gap": 0.67852090336409,
+      "entropy": 5.228399977099882,
+      "gini": 0.20363735422100157,
+      "top10_avg_count": 451.5
+    },
+    {
+      "alpha": 0.4,
+      "iters": 24,
+      "residual": 7.483475644720627e-13,
+      "lam2": 0.36740468186961195,
+      "gap": 0.632595318130388,
+      "entropy": 5.225661852900211,
+      "gini": 0.2072639997534093,
+      "top10_avg_count": 451.5
+    },
+    {
+      "alpha": 0.45,
+      "iters": 27,
+      "residual": 8.95078282325823e-13,
+      "lam2": 0.4133302671033161,
+      "gap": 0.5866697328966839,
+      "entropy": 5.222818055377145,
+      "gini": 0.21092712399930927,
+      "top10_avg_count": 451.5
+    },
+    {
+      "alpha": 0.5,
+      "iters": 31,
+      "residual": 6.862847963529095e-13,
+      "lam2": 0.4592558523370145,
+      "gap": 0.5407441476629855,
+      "entropy": 5.219871157355645,
+      "gini": 0.21460865821214523,
+      "top10_avg_count": 451.5
+    },
+    {
+      "alpha": 0.55,
+      "iters": 35,
+      "residual": 8.590714944967104e-13,
+      "lam2": 0.5051814375707167,
+      "gap": 0.49481856242928335,
+      "entropy": 5.216821548088456,
+      "gini": 0.21829221076281588,
+      "top10_avg_count": 432.7
+    },
+    {
+      "alpha": 0.6,
+      "iters": 40,
+      "residual": 9.186622816625967e-13,
+      "lam2": 0.5511070228044187,
+      "gap": 0.4488929771955813,
+      "entropy": 5.213666391435915,
+      "gini": 0.22198821843417144,
+      "top10_avg_count": 422.9
+    },
+    {
+      "alpha": 0.65,
+      "iters": 47,
+      "residual": 6.107193743776218e-13,
+      "lam2": 0.5970326080381196,
+      "gap": 0.40296739196188036,
+      "entropy": 5.210397610659703,
+      "gini": 0.22567863483737227,
+      "top10_avg_count": 422.9
+    },
+    {
+      "alpha": 0.7,
+      "iters": 54,
+      "residual": 9.034079907765946e-13,
+      "lam2": 0.6429581932718188,
+      "gap": 0.3570418067281812,
+      "entropy": 5.206997778340508,
+      "gini": 0.22936660493882918,
+      "top10_avg_count": 422.9
+    },
+    {
+      "alpha": 0.75,
+      "iters": 64,
+      "residual": 9.023875396918513e-13,
+      "lam2": 0.6888837785055254,
+      "gap": 0.3111162214944746,
+      "entropy": 5.203431086748122,
+      "gini": 0.23307534945849295,
+      "top10_avg_count": 422.9
+    },
+    {
+      "alpha": 0.8,
+      "iters": 78,
+      "residual": 7.510645751163114e-13,
+      "lam2": 0.7348093637392269,
+      "gap": 0.2651906362607731,
+      "entropy": 5.199621468578028,
+      "gini": 0.23683849119088404,
+      "top10_avg_count": 422.9
+    },
+    {
+      "alpha": 0.85,
+      "iters": 96,
+      "residual": 9.872059766879993e-13,
+      "lam2": 0.7807349489729272,
+      "gap": 0.21926505102707283,
+      "entropy": 5.195392277942429,
+      "gini": 0.24079677290486262,
+      "top10_avg_count": 407.8
+    },
+    {
+      "alpha": 0.9,
+      "iters": 125,
+      "residual": 9.54916267587036e-13,
+      "lam2": 0.8266605342066302,
+      "gap": 0.17333946579336978,
+      "entropy": 5.190267960075006,
+      "gini": 0.24546545006985027,
+      "top10_avg_count": 390.6
+    },
+    {
+      "alpha": 0.95,
+      "iters": 175,
+      "residual": 9.026551207880207e-13,
+      "lam2": 0.8725861194403258,
+      "gap": 0.12741388055967418,
+      "entropy": 5.182629769358137,
+      "gini": 0.25278287615508516,
+      "top10_avg_count": 390.6
+    }
+  ],
+  "default": {
+    "alpha": 0.6,
+    "iters": 40,
+    "l1_residual": 9.186622816625967e-13,
+    "cross_check_l1": 1.1283864467803717e-12,
+    "direct_residual": 7.251144129583054e-16,
+    "lam1": 0.999999999999998,
+    "lam2": 0.5511070228044187,
+    "spectral_gap": 0.4488929771955813,
+    "entropy": 5.213666391435915,
+    "gini": 0.22198821843417144,
+    "top10": [
+      {
+        "rank": 1,
+        "title": "Raiders of the Lost Ark (1981)",
+        "pi": 0.01506,
+        "count": 420
+      },
+      {
+        "rank": 2,
+        "title": "Star Wars (1977)",
+        "pi": 0.01364,
+        "count": 583
+      },
+      {
+        "rank": 3,
+        "title": "Back to the Future (1985)",
+        "pi": 0.01208,
+        "count": 350
+      },
+      {
+        "rank": 4,
+        "title": "Empire Strikes Back, The (1980)",
+        "pi": 0.01137,
+        "count": 367
+      },
+      {
+        "rank": 5,
+        "title": "Return of the Jedi (1983)",
+        "pi": 0.01134,
+        "count": 507
+      },
+      {
+        "rank": 6,
+        "title": "Fargo (1996)",
+        "pi": 0.01085,
+        "count": 508
+      },
+      {
+        "rank": 7,
+        "title": "Silence of the Lambs, The (1991)",
+        "pi": 0.01051,
+        "count": 390
+      },
+      {
+        "rank": 8,
+        "title": "Forrest Gump (1994)",
+        "pi": 0.01016,
+        "count": 321
+      },
+      {
+        "rank": 9,
+        "title": "Toy Story (1995)",
+        "pi": 0.01006,
+        "count": 452
+      },
+      {
+        "rank": 10,
+        "title": "Indiana Jones and the Last Crusade (1989)",
+        "pi": 0.00981,
+        "count": 331
+      }
+    ],
+    "top10_mass": 0.11489343100102971,
+    "vpop_top10_mass": 0.10168322007318348,
+    "top10_avg_count": 422.9,
+    "vpop_top10_avg_count": 486.3
+  },
+  "personalized_scan": {
+    "seed": "Star Wars (1977)",
+    "rows": [
+      {
+        "alpha": 0.3,
+        "iters": 20,
+        "entropy": 2.6758519588808944,
+        "top10_avg_count": 442.0,
+        "top1": "Star Wars (1977)",
+        "top1_share": 0.5992204679463401
+      },
+      {
+        "alpha": 0.5,
+        "iters": 32,
+        "entropy": 3.5155950424270572,
+        "top10_avg_count": 439.7,
+        "top1": "Star Wars (1977)",
+        "top1_share": 0.43276384829334547
+      },
+      {
+        "alpha": 0.7,
+        "iters": 57,
+        "entropy": 4.277591300521818,
+        "top10_avg_count": 439.7,
+        "top1": "Star Wars (1977)",
+        "top1_share": 0.2669989135457265
+      },
+      {
+        "alpha": 0.85,
+        "iters": 101,
+        "entropy": 4.794259244035233,
+        "top10_avg_count": 439.7,
+        "top1": "Star Wars (1977)",
+        "top1_share": 0.1421306334079905
+      },
+      {
+        "alpha": 0.95,
+        "iters": 182,
+        "entropy": 5.091342774631459,
+        "top10_avg_count": 432.5,
+        "top1": "Star Wars (1977)",
+        "top1_share": 0.057179146832680314
+      }
+    ]
+  },
+  "slices": [
+    {
+      "idx": 1,
+      "start": "1997-09-20",
+      "end": "1997-11-13",
+      "n": 11957,
+      "n_users": 270,
+      "n_components": 5,
+      "largest_component": 196,
+      "dangling": 4,
+      "iters": 39,
+      "residual": 8.991704950056523e-13,
+      "entropy": 5.21352426920267,
+      "top10": [
+        "Raiders of the Lost Ark (1981)",
+        "Star Wars (1977)",
+        "Fargo (1996)",
+        "Back to the Future (1985)",
+        "Toy Story (1995)",
+        "Pulp Fiction (1994)",
+        "Return of the Jedi (1983)",
+        "Twelve Monkeys (1995)",
+        "Silence of the Lambs, The (1991)",
+        "Jerry Maguire (1996)"
+      ],
+      "top10_avg_count": 125.1,
+      "coverage_rated": 196
+    },
+    {
+      "idx": 2,
+      "start": "1997-11-13",
+      "end": "1997-12-18",
+      "n": 11956,
+      "n_users": 271,
+      "n_components": 5,
+      "largest_component": 196,
+      "dangling": 4,
+      "iters": 38,
+      "residual": 8.979592243385515e-13,
+      "entropy": 5.213711425182612,
+      "top10": [
+        "Star Wars (1977)",
+        "Back to the Future (1985)",
+        "Return of the Jedi (1983)",
+        "Raiders of the Lost Ark (1981)",
+        "Pulp Fiction (1994)",
+        "Fugitive, The (1993)",
+        "Fargo (1996)",
+        "Empire Strikes Back, The (1980)",
+        "Toy Story (1995)",
+        "Silence of the Lambs, The (1991)"
+      ],
+      "top10_avg_count": 112.2,
+      "coverage_rated": 196
+    },
+    {
+      "idx": 3,
+      "start": "1997-12-18",
+      "end": "1998-02-21",
+      "n": 11957,
+      "n_users": 342,
+      "n_components": 1,
+      "largest_component": 200,
+      "dangling": 0,
+      "iters": 39,
+      "residual": 6.66947400085327e-13,
+      "entropy": 5.221755945387,
+      "top10": [
+        "Star Wars (1977)",
+        "Raiders of the Lost Ark (1981)",
+        "Back to the Future (1985)",
+        "Empire Strikes Back, The (1980)",
+        "Fargo (1996)",
+        "Return of the Jedi (1983)",
+        "E.T. the Extra-Terrestrial (1982)",
+        "Rock, The (1996)",
+        "Independence Day (ID4) (1996)",
+        "Forrest Gump (1994)"
+      ],
+      "top10_avg_count": 102.1,
+      "coverage_rated": 200
+    },
+    {
+      "idx": 4,
+      "start": "1998-02-21",
+      "end": "1998-04-22",
+      "n": 11955,
+      "n_users": 359,
+      "n_components": 1,
+      "largest_component": 200,
+      "dangling": 0,
+      "iters": 41,
+      "residual": 7.469736634790891e-13,
+      "entropy": 5.23515948232123,
+      "top10": [
+        "Raiders of the Lost Ark (1981)",
+        "Silence of the Lambs, The (1991)",
+        "Star Wars (1977)",
+        "Return of the Jedi (1983)",
+        "Fargo (1996)",
+        "Pulp Fiction (1994)",
+        "Back to the Future (1985)",
+        "Fugitive, The (1993)",
+        "Independence Day (ID4) (1996)",
+        "Contact (1997)"
+      ],
+      "top10_avg_count": 103.3,
+      "coverage_rated": 200
+    }
+  ],
+  "prediction": {
+    "actual_slice": {
+      "idx": 4,
+      "start": "1998-02-21",
+      "end": "1998-04-22",
+      "n": 11955,
+      "n_users": 359,
+      "n_components": 1,
+      "largest_component": 200,
+      "dangling": 0,
+      "iters": 41,
+      "residual": 7.469736634790891e-13,
+      "entropy": 5.23515948232123,
+      "top10": [
+        "Raiders of the Lost Ark (1981)",
+        "Silence of the Lambs, The (1991)",
+        "Star Wars (1977)",
+        "Return of the Jedi (1983)",
+        "Fargo (1996)",
+        "Pulp Fiction (1994)",
+        "Back to the Future (1985)",
+        "Fugitive, The (1993)",
+        "Independence Day (ID4) (1996)",
+        "Contact (1997)"
+      ],
+      "top10_avg_count": 103.3,
+      "coverage_rated": 200
+    },
+    "actual_top10": [
+      "Titanic (1997)",
+      "Air Force One (1997)",
+      "Contact (1997)",
+      "English Patient, The (1996)",
+      "Star Wars (1977)",
+      "Good Will Hunting (1997)",
+      "Scream (1996)",
+      "Full Monty, The (1997)",
+      "Liar Liar (1997)",
+      "Fargo (1996)"
+    ],
+    "models": [
+      {
+        "name": "本模型 一步预测 f3·P_alpha*",
+        "kl": 0.04514947351687561,
+        "hit10": 0.3,
+        "spearman": 0.7812476840412182,
+        "top10": [
+          "Raiders of the Lost Ark (1981)",
+          "Star Wars (1977)",
+          "Back to the Future (1985)",
+          "Empire Strikes Back, The (1980)",
+          "Return of the Jedi (1983)",
+          "Fargo (1996)",
+          "Toy Story (1995)",
+          "Contact (1997)",
+          "Independence Day (ID4) (1996)",
+          "Jerry Maguire (1996)"
+        ],
+        "top10_avg_count": 450.9
+      },
+      {
+        "name": "基线1 纯频次",
+        "kl": 0.058501081286500924,
+        "hit10": 0.6,
+        "spearman": 0.64233621967414,
+        "top10": [
+          "Star Wars (1977)",
+          "Return of the Jedi (1983)",
+          "Fargo (1996)",
+          "Liar Liar (1997)",
+          "Contact (1997)",
+          "Toy Story (1995)",
+          "Scream (1996)",
+          "Independence Day (ID4) (1996)",
+          "English Patient, The (1996)",
+          "Raiders of the Lost Ark (1981)"
+        ],
+        "top10_avg_count": 485.2
+      },
+      {
+        "name": "基线2 无重启平稳分布",
+        "kl": 0.13533805465329135,
+        "hit10": 0.1,
+        "spearman": 0.44250771816547657,
+        "top10": [
+          "Raiders of the Lost Ark (1981)",
+          "Back to the Future (1985)",
+          "Empire Strikes Back, The (1980)",
+          "Forrest Gump (1994)",
+          "Star Wars (1977)",
+          "Silence of the Lambs, The (1991)",
+          "E.T. the Extra-Terrestrial (1982)",
+          "Indiana Jones and the Last Crusade (1989)",
+          "Terminator, The (1984)",
+          "Pulp Fiction (1994)"
+        ],
+        "top10_avg_count": 375.7
+      },
+      {
+        "name": "基线3 ItemCF 单步",
+        "kl": 0.10029379356980778,
+        "hit10": 0.1,
+        "spearman": 0.3259789850514369,
+        "top10": [
+          "Raiders of the Lost Ark (1981)",
+          "Star Wars (1977)",
+          "Back to the Future (1985)",
+          "Empire Strikes Back, The (1980)",
+          "Return of the Jedi (1983)",
+          "Silence of the Lambs, The (1991)",
+          "Forrest Gump (1994)",
+          "Pulp Fiction (1994)",
+          "Fugitive, The (1993)",
+          "Indiana Jones and the Last Crusade (1989)"
+        ],
+        "top10_avg_count": 399.9
+      },
+      {
+        "name": "对照 一步预测 alpha=0.85",
+        "kl": 0.060091737305585306,
+        "hit10": 0.2,
+        "spearman": 0.7494007536514935,
+        "top10": [
+          "Raiders of the Lost Ark (1981)",
+          "Star Wars (1977)",
+          "Back to the Future (1985)",
+          "Empire Strikes Back, The (1980)",
+          "Return of the Jedi (1983)",
+          "Toy Story (1995)",
+          "Forrest Gump (1994)",
+          "Fargo (1996)",
+          "Jerry Maguire (1996)",
+          "Silence of the Lambs, The (1991)"
+        ],
+        "top10_avg_count": 428.2
+      },
+      {
+        "name": "对照 平稳分布均值",
+        "kl": 0.06131423249089532,
+        "hit10": 0.2,
+        "spearman": 0.6790645502545953,
+        "top10": [
+          "Raiders of the Lost Ark (1981)",
+          "Star Wars (1977)",
+          "Back to the Future (1985)",
+          "Fargo (1996)",
+          "Return of the Jedi (1983)",
+          "Empire Strikes Back, The (1980)",
+          "Pulp Fiction (1994)",
+          "Toy Story (1995)",
+          "Silence of the Lambs, The (1991)",
+          "Independence Day (ID4) (1996)"
+        ],
+        "top10_avg_count": 440.0
+      }
+    ]
+  },
+  "no_restart": {
+    "iters": 289,
+    "converged": true,
+    "final_residual": 9.511922499649828e-15,
+    "l1_between_two_inits": 2.3462135012586316e-16,
+    "entropy": 5.157701985196651,
+    "top10_avg_count": 375.7
+  },
+  "user_level": {
+    "alpha_selected": 0.6,
+    "validation": {
+      "n_users": 109,
+      "avg_relevant": 7.770642201834862,
+      "grid": [
+        {
+          "hit10": 0.5137614678899083,
+          "p10": 0.11926605504587157,
+          "recall10": 0.1462443737915529,
+          "ndcg10": 0.15821491278716796,
+          "coverage": 0.63,
+          "alpha": 0.3
+        },
+        {
+          "hit10": 0.5321100917431193,
+          "p10": 0.11926605504587157,
+          "recall10": 0.14845785857384503,
+          "ndcg10": 0.1590923414099443,
+          "coverage": 0.65,
+          "alpha": 0.4
+        },
+        {
+          "hit10": 0.5321100917431193,
+          "p10": 0.1201834862385321,
+          "recall10": 0.14773162980043406,
+          "ndcg10": 0.15912713673361767,
+          "coverage": 0.635,
+          "alpha": 0.45
+        },
+        {
+          "hit10": 0.5321100917431193,
+          "p10": 0.12110091743119267,
+          "recall10": 0.1480183270481405,
+          "ndcg10": 0.15791556558368156,
+          "coverage": 0.63,
+          "alpha": 0.5
+        },
+        {
+          "hit10": 0.5321100917431193,
+          "p10": 0.1220183486238532,
+          "recall10": 0.1491651160389662,
+          "ndcg10": 0.15842750202556613,
+          "coverage": 0.625,
+          "alpha": 0.55
+        },
+        {
+          "hit10": 0.5321100917431193,
+          "p10": 0.1220183486238532,
+          "recall10": 0.15055402493115164,
+          "ndcg10": 0.15967135236136965,
+          "coverage": 0.605,
+          "alpha": 0.6
+        },
+        {
+          "hit10": 0.5229357798165137,
+          "p10": 0.11926605504587158,
+          "recall10": 0.14736485935666493,
+          "ndcg10": 0.15295498767441887,
+          "coverage": 0.57,
+          "alpha": 0.7
+        },
+        {
+          "hit10": 0.5229357798165137,
+          "p10": 0.11467889908256881,
+          "recall10": 0.13779703166957116,
+          "ndcg10": 0.1433232425164111,
+          "coverage": 0.475,
+          "alpha": 0.85
+        },
+        {
+          "hit10": 0.43119266055045874,
+          "p10": 0.11009174311926608,
+          "recall10": 0.10147287220433436,
+          "ndcg10": 0.13105847657192707,
+          "coverage": 0.415,
+          "alpha": 0.95
+        }
+      ],
+      "baselines": {
+        "pop": {
+          "hit10": 0.6330275229357798,
+          "p10": 0.1293577981651376,
+          "recall10": 0.2263749535891398,
+          "ndcg10": 0.2073948633649421,
+          "coverage": 0.265
+        },
+        "icf": {
+          "hit10": 0.47706422018348627,
+          "p10": 0.12018348623853212,
+          "recall10": 0.12132278464641397,
+          "ndcg10": 0.1445965542334678,
+          "coverage": 0.59
+        },
+        "nr": {
+          "hit10": 0.42201834862385323,
+          "p10": 0.10458715596330277,
+          "recall10": 0.08941101703366051,
+          "ndcg10": 0.1270803447808902,
+          "coverage": 0.4
+        }
+      }
+    },
+    "test": {
+      "n_users": 104,
+      "avg_relevant": 10.923076923076923,
+      "grid": [
+        {
+          "hit10": 0.6057692307692307,
+          "p10": 0.16730769230769232,
+          "recall10": 0.21443243175035792,
+          "ndcg10": 0.2239270187189946,
+          "coverage": 0.61,
+          "alpha": 0.3
+        },
+        {
+          "hit10": 0.6057692307692307,
+          "p10": 0.16346153846153846,
+          "recall10": 0.210679760810187,
+          "ndcg10": 0.21960411064609747,
+          "coverage": 0.625,
+          "alpha": 0.4
+        },
+        {
+          "hit10": 0.6057692307692307,
+          "p10": 0.1653846153846154,
+          "recall10": 0.21138088260505877,
+          "ndcg10": 0.2204291904480774,
+          "coverage": 0.635,
+          "alpha": 0.45
+        },
+        {
+          "hit10": 0.5865384615384616,
+          "p10": 0.16153846153846155,
+          "recall10": 0.20297600623143242,
+          "ndcg10": 0.21565726829892512,
+          "coverage": 0.635,
+          "alpha": 0.5
+        },
+        {
+          "hit10": 0.5769230769230769,
+          "p10": 0.1576923076923077,
+          "recall10": 0.19572033919315665,
+          "ndcg10": 0.2105889563001527,
+          "coverage": 0.64,
+          "alpha": 0.55
+        },
+        {
+          "hit10": 0.5769230769230769,
+          "p10": 0.15961538461538463,
+          "recall10": 0.19520223550197605,
+          "ndcg10": 0.21070826399211207,
+          "coverage": 0.635,
+          "alpha": 0.6
+        },
+        {
+          "hit10": 0.5192307692307693,
+          "p10": 0.1567307692307692,
+          "recall10": 0.16205881003124792,
+          "ndcg10": 0.20040402585894296,
+          "coverage": 0.61,
+          "alpha": 0.7
+        },
+        {
+          "hit10": 0.5096153846153846,
+          "p10": 0.1557692307692308,
+          "recall10": 0.13785473825783923,
+          "ndcg10": 0.19425309603149074,
+          "coverage": 0.515,
+          "alpha": 0.85
+        },
+        {
+          "hit10": 0.5,
+          "p10": 0.16057692307692312,
+          "recall10": 0.13060860804930854,
+          "ndcg10": 0.19390616048005208,
+          "coverage": 0.48,
+          "alpha": 0.95
+        }
+      ],
+      "baselines": {
+        "pop": {
+          "hit10": 0.5769230769230769,
+          "p10": 0.15000000000000002,
+          "recall10": 0.18438182876454723,
+          "ndcg10": 0.19957427819766738,
+          "coverage": 0.365
+        },
+        "icf": {
+          "hit10": 0.5,
+          "p10": 0.16346153846153846,
+          "recall10": 0.13592496111149144,
+          "ndcg10": 0.19953721155933504,
+          "coverage": 0.64
+        },
+        "nr": {
+          "hit10": 0.4519230769230769,
+          "p10": 0.1548076923076923,
+          "recall10": 0.12334097047871384,
+          "ndcg10": 0.1777583411641739,
+          "coverage": 0.47
+        }
+      }
+    },
+    "main_row": {
+      "hit10": 0.5769230769230769,
+      "p10": 0.15961538461538463,
+      "recall10": 0.19520223550197605,
+      "ndcg10": 0.21070826399211207,
+      "coverage": 0.635,
+      "alpha": 0.6
+    }
+  }
+}

@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图上随机游走与个性化重启 · MovieLens 原型</title>
+<style>
+:root{
+  --bg:#080b12; --panel:#0f1520; --panel2:#141c28; --line:#22303f;
+  --txt:#dfe8f3; --dim:#7f93a8; --acc:#ff6b4a; --acc2:#3fd0d4; --warn:#ffb84d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+  font-family:"Microsoft YaHei","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#app{display:grid;grid-template-columns:1fr 400px;grid-template-rows:auto 1fr;height:100%}
+header{grid-column:1/3;display:flex;align-items:baseline;gap:18px;padding:14px 22px 10px;
+  border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0d1320,#080b12)}
+header h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.5px}
+header h1 span{color:var(--acc)}
+header .sub{color:var(--dim);font-size:12px}
+header .meta{margin-left:auto;color:var(--dim);font-size:11.5px;text-align:right;line-height:1.5}
+.stage{position:relative;overflow:hidden;background:radial-gradient(ellipse at 40% 30%,#101a29 0%,#080b12 70%)}
+#graph{width:100%;height:100%;display:block;cursor:crosshair}
+.hint{position:absolute;left:18px;bottom:14px;font-size:11.5px;color:var(--dim);
+  background:rgba(8,11,18,.72);border:1px solid var(--line);border-radius:8px;padding:7px 11px;line-height:1.55}
+.legend{position:absolute;right:14px;top:12px;font-size:11px;color:var(--dim);
+  background:rgba(8,11,18,.72);border:1px solid var(--line);border-radius:8px;padding:8px 11px;line-height:1.7}
+.legend b{color:var(--txt);font-weight:500}
+aside{overflow-y:auto;border-left:1px solid var(--line);background:var(--panel);padding:14px 16px 40px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 13px;margin-bottom:12px}
+.card h2{margin:0 0 10px;font-size:12.5px;font-weight:600;color:var(--txt);letter-spacing:.6px}
+.card h2 .tag{float:right;font-weight:400;color:var(--dim);font-size:10.5px}
+.row{display:flex;align-items:center;gap:9px;margin:8px 0}
+.row label{font-size:11.5px;color:var(--dim);min-width:62px}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--line);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--acc);cursor:pointer;box-shadow:0 0 0 3px rgba(255,107,74,.15)}
+input[type=range]:disabled{opacity:.35}
+.val{font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--acc2);min-width:44px;text-align:right}
+.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+button{background:#1b2534;border:1px solid var(--line);color:var(--txt);font-size:11.5px;
+  padding:6px 10px;border-radius:7px;cursor:pointer;font-family:inherit;transition:.15s}
+button:hover{border-color:var(--acc);color:#fff}
+button.on{background:linear-gradient(180deg,#ff7a56,#e8543a);border-color:#ff8a66;color:#120a06;font-weight:600}
+.badge{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.badge.ok{color:#5ee0a8;border-color:#2c6a52;background:rgba(94,224,168,.08)}
+.badge.bad{color:var(--warn);border-color:#6b522c;background:rgba(255,184,77,.08)}
+.toplist{display:flex;flex-direction:column;gap:5px}
+.item{display:grid;grid-template-columns:18px 1fr auto;gap:7px;align-items:center;font-size:11.5px}
+.item .rk{color:var(--dim);font-variant-numeric:tabular-nums}
+.item .tt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .barwrap{grid-column:2/4;height:3px;background:#1b2534;border-radius:2px;overflow:hidden}
+.item .bar{height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc));width:0}
+.item .vv{color:var(--acc2);font-variant-numeric:tabular-nums;font-size:10.5px}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;color:var(--dim)}
+.mini div b{display:block;color:var(--txt);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+canvas.chart{width:100%;display:block;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:10.5px}
+th,td{padding:4px 3px;text-align:right;border-bottom:1px solid #1b2534;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left;color:var(--dim)}
+th{color:var(--dim);font-weight:400}
+tr.ours td{color:#ffd0b8}
+#tip{position:fixed;pointer-events:none;z-index:9;background:rgba(10,15,23,.96);border:1px solid var(--line);
+  border-radius:7px;padding:6px 9px;font-size:11px;color:var(--txt);opacity:0;transition:opacity .12s;line-height:1.5;max-width:240px}
+.note{font-size:10.5px;color:var(--dim);line-height:1.6;margin-top:8px}
+@media(max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:auto 46vh auto}aside{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>图上随机游走 <span>×</span> 个性化重启</h1>
+    <div class="sub">MovieLens 100K · 电影共现图的马尔可夫链</div>
+    <div class="meta" id="headMeta"></div>
+  </header>
+
+  <section class="stage">
+    <canvas id="graph"></canvas>
+    <div class="legend">
+      节点亮度 = <b>π<sub>i</b></sub>（对数）<br>
+      节点半径 ∝ √π<sub>i</sub><br>
+      边宽 = 相似度权重 w<sub>ij</sub><br>
+      光点 = 沿 P 行走的粒子
+    </div>
+    <div class="hint" id="hint">点击任意电影节点设种子 → 粒子从种子出发；再点一次取消。</div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <h2>控制台<span class="tag" id="modeTag">实时个性化</span></h2>
+      <div class="row">
+        <label>重启 α</label>
+        <input type="range" id="alpha" min="0.05" max="0.95" step="0.01" value="0.6">
+        <span class="val" id="alphaVal">0.60</span>
+      </div>
+      <div class="btnrow">
+        <button id="btnRestart" class="on">重启项：开</button>
+        <button id="btnClear">清空种子</button>
+        <button id="btnRandom">随机种子</button>
+        <button id="btnSlice">时间片回放</button>
+      </div>
+      <div class="row" id="sliceRow" style="display:none">
+        <label>时间片</label>
+        <input type="range" id="slice" min="1" max="4" step="1" value="4">
+        <span class="val" id="sliceVal">4/4</span>
+      </div>
+      <div class="note" id="stateNote">种子：无（显示全局先验 v<sub>pop</sub>）</div>
+    </div>
+
+    <div class="card">
+      <h2>Top-10 推荐<span class="tag" id="topTag">实时</span></h2>
+      <div class="toplist" id="toplist"></div>
+    </div>
+
+    <div class="card">
+      <h2>收敛<span class="tag">幂迭代 · L1 残差</span></h2>
+      <canvas class="chart" id="conv" height="110"></canvas>
+      <div class="mini" style="margin-top:9px">
+        <div>迭代次数<b id="stIter">—</b></div>
+        <div>末残差<b id="stRes">—</b></div>
+        <div>π 熵<b id="stEnt">—</b></div>
+        <div>谱隙 1−|λ₂|<b id="stGap">—</b></div>
+      </div>
+      <div class="note" id="convNote">α 越大 ⇒ 谱隙越小、混合越慢，但个性化越"扩散"。</div>
+    </div>
+
+    <div class="card">
+      <h2>P<sub>α</sub> 局部热图<span class="tag">悬停读值</span></h2>
+      <canvas class="chart" id="heat" height="180"></canvas>
+      <div class="note">取 π 最大的 24 个状态，行和恒为 1；非零底噪来自重启项 (1−α)v<sup>T</sup>。</div>
+    </div>
+
+    <div class="card">
+      <h2>第 4 片预测对比<span class="tag">KL ↓ / hit@10 ↑</span></h2>
+      <table id="mTable"></table>
+      <div class="note">KL(真实‖预测)；hit@10 为全局 Top-10 重合率。数值由 compute.py 离线算出，与论文同源。</div>
+    </div>
+  </aside>
+</div>
+<div id="tip"></div>
+
+<script>
+const DATA = /*__DATA__*/;
+</script>
+<script>
+"use strict";
+const G = DATA.graph, S = DATA.slice;
+const N = G.nodes.length;
+const titles = G.nodes.map(n => n.title);
+const counts = G.nodes.map(n => n.count);
+const vpop = S.vpop;
+
+/* ---------- 图结构：邻接表 + 行归一化 ---------- */
+const adj = Array.from({length:N}, () => []);
+for (const [a,b,w] of G.links){ adj[a].push([b,w]); adj[b].push([a,w]); }
+const degSum = adj.map(l => l.reduce((s,x) => s + x[1], 0));
+const rows = [];
+for (let i=0;i<N;i++){
+  if (degSum[i] > 0) rows.push(adj[i].map(([j,w]) => [j, w/degSum[i]]));
+  else rows.push(vpop.map((p,j) => [j,p]));
+}
+/* 无序和检查 */
+const rowSum = rows.map(r => r.reduce((s,x)=>s+x[1],0));
+const rowSumBad = rowSum.filter(s => Math.abs(s-1) > 1e-9).length;
+if (rowSumBad) console.warn("行和异常", rowSumBad);
+
+const EPS = 0.15;
+const state = {
+  seeds: [], alpha: 0.6, restart: true,
+  mode: "live",          // live | slice
+  sliceIdx: 3,
+  pi: new Float64Array(N),
+  hist: [], iters: 0, resid: 0,
+  visits: new Float64Array(N),
+  hover: -1
+};
+const S_gap = {0.6: 0.4489};
+
+/* ---------- 工具 ---------- */
+const clamp = (x,a,b) => x<a?a:(x>b?b:x);
+function fmt(x,d=2){ return Number(x).toFixed(d); }
+function makeV(seeds){
+  if (!seeds.length) return vpop.slice();
+  const v = new Float64Array(N);
+  const w = 1/seeds.length;
+  for (const s of seeds) v[s] += w;
+  for (let i=0;i<N;i++) v[i] = (1-EPS)*v[i] + EPS*vpop[i];
+  return v;
+}
+function ppr(v, alpha, maxIter=1500){
+  let pi = Float64Array.from(v);
+  let sum = pi.reduce((a,b)=>a+b,0); for(let i=0;i<N;i++) pi[i]/=sum;
+  const buf = new Float64Array(N), hist = [];
+  let it = 0, res = 1;
+  while (it < maxIter){
+    for (let i=0;i<N;i++) buf[i] = (1-alpha)*v[i];
+    for (let i=0;i<N;i++){
+      const p = pi[i]; if (p === 0) continue;
+      const r = rows[i];
+      for (let k=0;k<r.length;k++) buf[r[k][0]] += alpha*p*r[k][1];
+    }
+    let s = 0; for (let i=0;i<N;i++) s += buf[i];
+    if (s > 0) for (let i=0;i<N;i++) buf[i] /= s;
+    res = 0; for (let i=0;i<N;i++) res += Math.abs(buf[i]-pi[i]);
+    hist.push(res);
+    pi = buf.slice(); it++;
+    if (res < 1e-12) break;
+  }
+  return {pi, hist, iters:it, resid:res};
+}
+function entropy(p){
+  let h = 0; for (const x of p) if (x > 0) h -= x*Math.log(x);
+  return h;
+}
+
+/* ---------- 主计算 ---------- */
+let lastRun = null;
+function recompute(){
+  if (state.mode === "slice"){
+    const rec = S.pi[state.sliceIdx];
+    state.pi = Float64Array.from(rec.values);
+    state.hist = []; state.iters = rec.iters || 0; state.resid = rec.residual || 0;
+    lastRun = null;
+  } else {
+    const v = makeV(state.seeds);
+    const a = state.restart ? state.alpha : 1.0;
+    const r = ppr(v, a);
+    state.pi = r.pi; state.hist = r.hist; state.iters = r.iters; state.resid = r.resid;
+    lastRun = {v, a, r};
+  }
+  state.visits.fill(0);
+  updateUI();
+  drawConv(); drawHeat();
+}
+
+function rankedTop(k=10){
+  const pi = state.pi;
+  const ex = new Set(state.mode === "live" ? state.seeds : []);
+  const idxs = [];
+  for (let i=0;i<N;i++) if (!ex.has(i)) idxs.push(i);
+  idxs.sort((a,b) => pi[b]-pi[a]);
+  return idxs.slice(0,k).map(i => ({i, p: pi[i]}));
+}
+
+/* ---------- UI ---------- */
+const el = id => document.getElementById(id);
+function updateUI(){
+  const tagMode = el("modeTag");
+  tagMode.textContent = state.mode === "slice" ? "时间片回放" : "实时个性化";
+  el("sliceRow").style.display = state.mode === "slice" ? "flex" : "none";
+  el("sliceVal").textContent = `${state.sliceIdx+1}/4`;
+  el("alphaVal").textContent = state.restart ? fmt(state.alpha,2) : "1.00";
+  el("headMeta").innerHTML =
+    `${G.meta.n_nodes} 节点 · ${G.meta.n_links} 边 · ${G.meta.n_components} 连通分量<br>
+     ${G.meta.time_start} → ${G.meta.time_end} · α*=${state.mode==='slice'?S.alpha:fmt(state.alpha,2)}`;
+
+  // 状态说明
+  let note = "";
+  if (state.mode === "slice"){
+    const sl = S.slices[state.sliceIdx];
+    note = `片 ${sl.idx}：${sl.start} ~ ${sl.end}，评分 ${sl.n} 条，连通分量 ${sl.n_components}（最大 ${sl.largest_component}），悬挂节点 ${sl.dangling}。`;
+  } else if (!state.restart){
+    note = `重启项已关闭（α=1）：此时 P<sub>α</sub> ≡ P，<b>与 v 完全无关</b>，换种子结果不变——个性化失效。`;
+  } else if (!state.seeds.length){
+    note = `未选种子：v = v<sub>pop</sub>，得到全局 PageRank 式分布。`;
+  } else {
+    note = `种子 ${state.seeds.length} 个：${state.seeds.slice(0,3).map(i=>titles[i].replace(/\s*\(\d{4}\)$/,"")).join("、")}${state.seeds.length>3?" 等":""}`;
+  }
+  el("stateNote").innerHTML = note;
+
+  // Top-10
+  const list = rankedTop(10);
+  const pmax = list.length ? list[0].p : 1;
+  el("toplist").innerHTML = list.map((x,k) => {
+    const name = titles[x.i].replace(/\s*\((\d{4})\)$/,"");
+    return `<div class="item">
+      <span class="rk">${k+1}</span>
+      <span class="tt" title="${titles[x.i]}">${name}</span>
+      <span class="vv">${(x.p*100).toFixed(2)}%</span>
+      <div class="barwrap"><div class="bar" style="width:${(x.p/pmax*100).toFixed(1)}%"></div></div>
+    </div>`;
+  }).join("");
+  el("topTag").textContent = state.mode === "slice" ? `片 ${state.sliceIdx+1}` : `α=${state.restart?fmt(state.alpha,2):"1.00"}`;
+
+  el("stIter").textContent = state.iters || "—";
+  el("stRes").textContent = state.resid ? state.resid.toExponential(1) : "—";
+  el("stEnt").textContent = state.mode === "slice" ? fmt(S.slices[state.sliceIdx].entropy,3) : fmt(entropy(state.pi),3);
+  el("stGap").textContent = state.mode !== "slice" && state.restart ? (S_gap[fmt(state.alpha,2)] || "≈") : "—";
+
+  // 指标表
+  const models = S.prediction.models.slice(0,4);
+  el("mTable").innerHTML = `<tr><th>模型</th><th>KL</th><th>hit@10</th><th>ρ</th></tr>` +
+    models.map((m,k) => `<tr class="${k===0?'ours':''}">
+      <td title="${m.name}">${m.name.replace(" 一步预测 f3·P_alpha*","").replace(" 平稳分布","")}</td>
+      <td>${m.kl.toFixed(4)}</td><td>${m.hit10.toFixed(2)}</td><td>${m.spearman.toFixed(3)}</td></tr>`).join("");
+}
+
+/* ---------- 画布 ---------- */
+const cv = el("graph"), ctx = cv.getContext("2d");
+let W=0, H=0, DPR=1, PAD=54, view={sx:1, sy:1, ox:0, oy:0};
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const availW = W - 2*PAD, availH = H - 2*PAD;
+  view.sx = availW / (1 + 1e-9); view.sy = availH;
+  view.ox = PAD; view.oy = PAD;
+  buildHeatMap();
+}
+window.addEventListener("resize", resize);
+
+function nodeXY(i){
+  const nd = G.nodes[i];
+  return [view.ox + nd.x*view.sx, view.oy + nd.y*view.sy];
+}
+
+const cmap = (t) => {
+  t = clamp(t,0,1);
+  const stops = [[0,[38,52,96]],[0.32,[82,64,178]],[0.58,[196,62,150]],[0.8,[255,116,60]],[1,[255,226,140]]];
+  for (let k=0;k<stops.length-1;k++){
+    if (t <= stops[k+1][0]){
+      const f = (t-stops[k][0])/(stops[k+1][0]-stops[k][0]+1e-9);
+      const c = stops[k][1].map((v,j)=>Math.round(v+(stops[k+1][1][j]-v)*f));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+  }
+  return "rgb(255,226,140)";
+};
+
+/* 粒子 */
+const PARTS = 110;
+const parts = Array.from({length:PARTS}, () => ({node:-1, from:-1, to:-1, t:1, x:0, y:0, tx:0, ty:0, dur:1, born:0}));
+function spawnParts(){
+  for (let k=0;k<PARTS;k++){
+    const seed = state.seeds.length ? state.seeds[k % state.seeds.length] : Math.floor(Math.random()*N);
+    const p = parts[k];
+    p.node = seed; p.from = seed; p.to = seed; p.t = 1;
+    const xy = nodeXY(seed); p.x = xy[0]; p.y = xy[1]; p.tx = xy[0]; p.ty = xy[1];
+    p.dur = 0.6 + Math.random()*0.5;
+  }
+}
+function stepPart(p){
+  const r = rows[p.node];
+  let u = Math.random(), acc = 0, nxt = r.length ? r[r.length-1][0] : p.node;
+  for (let k=0;k<r.length;k++){ acc += r[k][1]; if (u <= acc){ nxt = r[k][0]; break; } }
+  // 重启：以 1-α 概率直接跳回种子（v 的一次抽样）
+  if (state.restart && Math.random() < (1-state.alpha)){
+    const v = lastRun ? lastRun.v : vpop;
+    let u2 = Math.random()*v.reduce((a,b)=>a+b,0), acc2 = 0, jump = p.node;
+    for (let k=0;k<N;k++){ acc2 += v[k]; if (u2 <= acc2){ jump = k; break; } }
+    nxt = jump;
+  }
+  p.from = p.node; p.to = nxt; p.node = nxt;
+  const a = nodeXY(p.from), b = nodeXY(p.to);
+  p.x = a[0]; p.y = a[1]; p.tx = b[0]; p.ty = b[1];
+  p.t = 0; p.dur = 0.55 + Math.random()*0.45;
+}
+
+let lastT = 0;
+function draw(now){
+  const dt = Math.min(60, now - lastT) / 1000; lastT = now;
+  ctx.clearRect(0,0,W,H);
+
+  const pi = state.pi;
+  let pmin = Infinity, pmax = 0;
+  for (let i=0;i<N;i++){ if (pi[i] < pmin) pmin = pi[i]; if (pi[i] > pmax) pmax = pi[i]; }
+  const lg = x => Math.log10(Math.max(x,1e-7));
+  const lo = lg(pmin), hi = lg(pmax);
+
+  // 边
+  ctx.lineCap = "round";
+  for (const [a,b,w] of G.links){
+    const p1 = nodeXY(a), p2 = nodeXY(b);
+    const both = state.seeds.includes(a) || state.seeds.includes(b);
+    ctx.strokeStyle = both ? "rgba(255,150,110,.55)" : "rgba(120,145,180,.16)";
+    ctx.lineWidth = 0.28 + 1.5*w;
+    ctx.beginPath(); ctx.moveTo(p1[0],p1[1]); ctx.lineTo(p2[0],p2[1]); ctx.stroke();
+  }
+
+  // 节点
+  const topIdx = rankedTop(12).map(x=>x.i);
+  for (let i=0;i<N;i++){
+    const [x,y] = nodeXY(i);
+    const t = (lg(pi[i]) - lo) / (hi - lo + 1e-9);
+    const r = 2.6 + 9*Math.sqrt(pi[i]/pmax) + 3*Math.sqrt(state.visits[i]/Math.max(1,state.visits.reduce((a,b)=>a+b,0)));
+    if (state.seeds.includes(i)){
+      ctx.beginPath(); ctx.arc(x,y,r+6,0,7); ctx.fillStyle="rgba(255,107,74,.16)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,r+3,0,7); ctx.strokeStyle="rgba(255,140,100,.85)"; ctx.lineWidth=1.2; ctx.stroke();
+    }
+    ctx.beginPath(); ctx.arc(x,y,r,0,7);
+    ctx.fillStyle = cmap(t); ctx.fill();
+    ctx.strokeStyle = "rgba(6,10,16,.55)"; ctx.lineWidth = 0.6; ctx.stroke();
+  }
+
+  // 粒子
+  if (!state.mode.startsWith("slice")){
+    for (const p of parts){
+      if (p.t < 1){
+        p.t = Math.min(1, p.t + dt/p.dur);
+        const e = 1-Math.pow(1-p.t,3);
+        p.x = p.x + (p.tx-p.x)*0.16; p.y = p.y + (p.ty-p.y)*0.16;
+        if (p.t >= 1){ state.visits[p.to] += 1; stepPart(p); }
+      } else { stepPart(p); }
+      const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,7);
+      g.addColorStop(0,"rgba(140,240,255,.95)");
+      g.addColorStop(1,"rgba(80,200,255,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.x,p.y,7,0,7); ctx.fill();
+    }
+  }
+
+  // 标签（Top-12 与种子）
+  ctx.font = "10.5px 'Microsoft YaHei',sans-serif";
+  ctx.textBaseline = "middle";
+  for (const i of topIdx){
+    const [x,y] = nodeXY(i);
+    const name = titles[i].replace(/\s*\((\d{4})\)$/,"");
+    const txt = name.length > 16 ? name.slice(0,16)+"…" : name;
+    ctx.strokeStyle = "rgba(6,10,16,.9)"; ctx.lineWidth = 3;
+    ctx.strokeText(txt, x+9, y-7);
+    ctx.fillStyle = "rgba(214,228,244,.92)";
+    ctx.fillText(txt, x+9, y-7);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+/* ---------- 收敛图 ---------- */
+const ccv = el("conv"), cctx = ccv.getContext("2d");
+function drawConv(){
+  const w = ccv.clientWidth, h = 110;
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  ccv.width = Math.round(w*dpr); ccv.height = Math.round(h*dpr);
+  cctx.setTransform(dpr,0,0,dpr,0,0);
+  cctx.clearRect(0,0,w,h);
+  cctx.fillStyle = "#0b1018"; cctx.fillRect(0,0,w,h);
+  cctx.strokeStyle = "#1e2a3a"; cctx.lineWidth = 1;
+  for (let k=1;k<=3;k++){ const y = 8 + (h-22)*k/3; cctx.beginPath(); cctx.moveTo(30,y); cctx.lineTo(w-8,y); cctx.stroke(); }
+  const hist = state.hist;
+  if (!hist.length){
+    cctx.fillStyle = "#6b7d92"; cctx.font = "10.5px 'Microsoft YaHei'";
+    cctx.fillText(state.mode==="slice" ? "时间片回放：无在线迭代曲线" : "等待计算…", 40, h/2);
+    return;
+  }
+  const ymax = Math.ceil(Math.log10(Math.max(hist[0], 1e-13)));
+  const ymin = Math.floor(Math.log10(Math.max(Math.min(hist[hist.length-1]),1e-13)));
+  const sx = idx => 32 + (w-42)*idx/Math.max(1,hist.length-1);
+  const sy = v => 8 + (h-22)*(1 - (Math.log10(Math.max(v,1e-13))-ymin)/Math.max(1e-9,(ymax-ymin)));
+  cctx.strokeStyle = "#3fd0d4"; cctx.lineWidth = 1.6; cctx.beginPath();
+  hist.forEach((v,i) => { const x=sx(i), y=sy(v); i ? cctx.lineTo(x,y) : cctx.moveTo(x,y); });
+  cctx.stroke();
+  cctx.fillStyle = "#6b7d92"; cctx.font = "9px 'Microsoft YaHei'";
+  cctx.fillText("10^"+ymax, 3, 12); cctx.fillText("10^"+ymin, 3, h-12);
+  cctx.fillText("k", w-12, h-4);
+}
+
+/* ---------- 热图 ---------- */
+const hcv = el("heat"), hctx = hcv.getContext("2d");
+let heatNodes = [], heatVals = null, heatCell = 0, heatPad = 0;
+function buildHeatMap(){
+  const pi = state.pi;
+  heatNodes = Array.from({length:N},(_,i)=>i).sort((a,b)=>pi[b]-pi[a]).slice(0,24);
+  const w = hcv.clientWidth, h = 180;
+  const dpr = Math.min(2, window.devicePixelRatio||1);
+  hcv.width = Math.round(w*dpr); hcv.height = Math.round(h*dpr);
+  hctx.setTransform(dpr,0,0,dpr,0,0);
+  heatPad = 26;
+  heatCell = Math.min((w-heatPad-8)/24, (h-heatPad-8)/24);
+  computeHeat();
+}
+function computeHeat(){
+  const a = state.mode === "live" ? (state.restart ? state.alpha : 1.0) : S.alpha;
+  const v = state.mode === "live" ? makeV(state.seeds) : vpop;
+  heatVals = [];
+  let mx = 1e-9;
+  for (const i of heatNodes){
+    let rowVals = [];
+    const si = degSum[i] || 1;
+    for (const j of heatNodes){
+      let pij = 0;
+      for (const [nb,w] of adj[i]) if (nb === j) pij += w/si;
+      const val = a*pij + (1-a)*v[j];
+      rowVals.push(val); mx = Math.max(mx, val);
+    }
+    heatVals.push(rowVals);
+  }
+  mx = Math.max(mx, 0.02);
+  drawHeat(mx);
+}
+function drawHeat(mx){
+  const w = hcv.clientWidth, h = 180;
+  hctx.clearRect(0,0,w,h);
+  hctx.fillStyle = "#0b1018"; hctx.fillRect(0,0,w,h);
+  if (!heatVals) return;
+  const n = heatNodes.length;
+  for (let r=0;r<n;r++) for (let c=0;c<n;c++){
+    const val = heatVals[r][c];
+    const t = Math.pow(val/(mx||1), 0.45);
+    const col = cmap(t*0.95);
+    hctx.fillStyle = col;
+    hctx.fillRect(heatPad + c*heatCell, 6 + r*heatCell, heatCell-0.6, heatCell-0.6);
+  }
+  hctx.fillStyle = "#6b7d92"; hctx.font = "9px 'Microsoft YaHei'";
+  hctx.fillText("j →", heatPad + n*heatCell*0.42, 6 + n*heatCell + 11);
+  hctx.save(); hctx.translate(10, 6 + n*heatCell*0.7); hctx.rotate(-Math.PI/2);
+  hctx.fillText("i", 0, 0); hctx.restore();
+}
+
+/* ---------- 交互 ---------- */
+function hitTest(mx,my){
+  let best = -1, bd = 1e9;
+  for (let i=0;i<N;i++){
+    const [x,y] = nodeXY(i);
+    const d = (mx-x)**2 + (my-y)**2;
+    const rr = 12;
+    if (d < rr*rr && d < bd){ bd = d; best = i; }
+  }
+  return best;
+}
+cv.addEventListener("mousemove", e => {
+  const r = cv.getBoundingClientRect();
+  const mx = e.clientX-r.left, my = e.clientY-r.top;
+  const i = hitTest(mx,my);
+  state.hover = i;
+  const tip = el("tip");
+  if (i >= 0){
+    tip.innerHTML = `<b>${titles[i]}</b><br>评分数 ${counts[i]} · π=${(state.pi[i]*100).toFixed(2)}%`;
+    tip.style.left = (e.clientX+12)+"px"; tip.style.top = (e.clientY+12)+"px"; tip.style.opacity = 1;
+    cv.style.cursor = "pointer";
+  } else { tip.style.opacity = 0; cv.style.cursor = "crosshair"; }
+});
+cv.addEventListener("mouseleave", () => { el("tip").style.opacity = 0; });
+cv.addEventListener("click", e => {
+  const r = cv.getBoundingClientRect();
+  const i = hitTest(e.clientX-r.left, e.clientY-r.top);
+  if (i < 0) return;
+  if (state.mode === "slice"){ state.mode = "live"; el("btnSlice").classList.remove("on"); }
+  const k = state.seeds.indexOf(i);
+  if (k >= 0) state.seeds.splice(k,1); else state.seeds.push(i);
+  spawnParts();
+  recompute();
+});
+
+el("alpha").addEventListener("input", e => {
+  state.alpha = parseFloat(e.target.value);
+  if (state.mode === "slice"){ state.mode="live"; el("btnSlice").classList.remove("on"); }
+  recompute();
+});
+el("btnRestart").addEventListener("click", () => {
+  state.restart = !state.restart;
+  el("btnRestart").textContent = state.restart ? "重启项：开" : "重启项：关";
+  el("btnRestart").classList.toggle("on", state.restart);
+  recompute();
+});
+el("btnClear").addEventListener("click", () => { state.seeds = []; spawnParts(); recompute(); });
+el("btnRandom").addEventListener("click", () => {
+  state.seeds = [Math.floor(Math.random()*N), Math.floor(Math.random()*N)];
+  state.seeds = [...new Set(state.seeds)];
+  if (state.mode === "slice"){ state.mode="live"; el("btnSlice").classList.remove("on"); }
+  spawnParts(); recompute();
+});
+el("btnSlice").addEventListener("click", () => {
+  state.mode = state.mode === "slice" ? "live" : "slice";
+  el("btnSlice").classList.toggle("on", state.mode === "slice");
+  state.sliceIdx = parseInt(el("slice").value)-1;
+  recompute();
+});
+el("slice").addEventListener("input", e => {
+  state.sliceIdx = parseInt(e.target.value)-1;
+  if (state.mode === "slice") recompute();
+  else { state.mode = "slice"; el("btnSlice").classList.add("on"); recompute(); }
+});
+/* 热图悬停 */
+hcv.addEventListener("mousemove", e => {
+  const r = hcv.getBoundingClientRect();
+  const x = e.clientX-r.left, y = e.clientY-r.top;
+  const c = Math.floor((x-heatPad)/heatCell), rr = Math.floor((y-6)/heatCell);
+  const tip = el("tip");
+  if (heatVals && c>=0 && c<24 && rr>=0 && rr<24){
+    const i = heatNodes[rr], j = heatNodes[c];
+    tip.innerHTML = `P<sub>α</sub>(${rr+1},${c+1}) = ${heatVals[rr][c].toFixed(4)}<br>
+      ${titles[i].slice(0,18)} → ${titles[j].slice(0,18)}`;
+    tip.style.left = (e.clientX+12)+"px"; tip.style.top = (e.clientY+12)+"px"; tip.style.opacity=1;
+  } else tip.style.opacity = 0;
+});
+hcv.addEventListener("mouseleave", () => { el("tip").style.opacity = 0; });
+
+/* ---------- 启动 ---------- */
+resize();
+state.seeds = [];
+recompute();
+spawnParts();
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
