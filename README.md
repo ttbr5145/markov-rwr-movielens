@@ -125,6 +125,13 @@ xelatex 论文/paper_team.tex   # 团队版
 
 ## 许可
 
-本项目代码、论文与图表采用 [MIT License](LICENSE)，可自由使用、修改与再分发，保留版权声明即可。
+代码与论文采用两套许可，著作权人均为**吴桐**；团队其他成员参与选题讨论与资料整理，不主张著作权共有。
 
-MovieLens 100K 数据集不在此列，其版权归 [GroupLens Research](https://grouplens.org/datasets/movielens/) 所有，按原数据集的使用条款使用，仅用于课程学习。
+| 范围 | 许可 | 说明 |
+| --- | --- | --- |
+| `代码/`、`网页/`（Python 与 HTML/JS/CSS） | [MIT](LICENSE) | 可自由使用、修改、再分发，保留版权声明即可 |
+| `论文/`（tex、PDF、`fig/` 插图）与 README 文字 | [CC BY-NC 4.0](LICENSE-PAPER.md) | 允许署名后共享与演绎，不得商用 |
+
+CC BY-NC 4.0 的许可全文在 [`LICENSE-CC-BY-NC-4.0.txt`](LICENSE-CC-BY-NC-4.0.txt)，范围与署名要求见 [`LICENSE-PAPER.md`](LICENSE-PAPER.md)。
+
+MovieLens 100K 数据集不在上述任一许可的覆盖范围内，其版权归 [GroupLens Research](https://grouplens.org/datasets/movielens/) 所有，按原数据集的使用条款使用，仅用于课程学习。

@@ -1,6 +1,9 @@
 MIT License
 
-Copyright (c) 2026 吴桐及本项目全体成员
+适用范围：本仓库内的源代码与脚本，即 `代码/` 目录下的 Python 文件，以及 `网页/` 目录下的 HTML/JS/CSS 文件（含内联生成的 `网页/index.html` 与 `template.html`）。
+论文正文与插图不适用本许可，见 LICENSE-PAPER.md。
+
+Copyright (c) 2026 吴桐 (Wu Tong)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
